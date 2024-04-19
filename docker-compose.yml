@@ -1,0 +1,75 @@
+version: '3.1'
+volumes:
+  gem_dir:
+  mysql_dir:
+  tmp_data:
+  log_data:
+  vendor:
+  redis:
+services:
+  nginx:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+      args:
+        - HOST=${HOST}
+    depends_on:
+      - app
+    ports:
+      - 8080:80
+    volumes_from:
+      - app
+    env_file:
+      - .env
+  db:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./docker/mysql/Dockerfile
+    volumes:
+      - mysql_dir:/var/lib/mysql
+    command: mysqld --default-authentication-plugin=mysql_native_password
+  app: &app_base
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./docker/rails/Dockerfile
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle install && bundle exec rails s -b 0.0.0.0"
+    volumes:
+      - .:/app
+      - tmp_data:/app/tmp
+      - log_data:/app/log
+      - vendor:/app/vendor
+      - gem_dir:/usr/local/bundle
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+      - redis
+    environment:
+      - REDIS_URL_SIDEKIQ=redis://redis:6379/1
+    env_file:
+      - .env
+  redis:
+    build:
+      context: .
+      dockerfile: ./docker/redis/Dockerfile
+    command: redis-server
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+  # sidekiq:
+  #   depends_on:
+  #     - db
+  #     - redis
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/rails/Dockerfile
+  #   command: bundle exec sidekiq -C config/sidekiq.yml
+  #   volumes:
+  #     - .:/app
+  #     - /app/tmp
+  #   environment:
+  #     - REDIS_URL_SIDEKIQ=redis://redis:6379/1
