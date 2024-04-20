@@ -7,3 +7,11 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+user1 = User.find_or_create_by(email: 'admin@gmail.com', name: 'user1')
+user1.update(password: '123456')
+
+user2 = User.find_or_create_by(email: 'admin2@gmail.com', name: 'user2')
+user2.update(password: '123456')
+
+['youtube'].each {|source| Source.find_or_create_by(name: source)}
