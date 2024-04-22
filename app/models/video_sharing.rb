@@ -5,5 +5,6 @@ class VideoSharing < ApplicationRecord
 
   def create_notification
     notification = Notification.create(user: user, content: "#{user.name} shared a video.\nTitle: #{title}")
+    NotificationBroadcastJob.perform_async(user, notification)
   end
 end

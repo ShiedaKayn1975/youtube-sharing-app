@@ -1,6 +1,6 @@
 #app/jobs/notification_broadcast_job.rb
 class NotificationBroadcastJob < ApplicationJob
-  queue_as :default
+  include Sidekiq::Job
 
   def perform(user, notification)
     user.subscriptions.each do |subscription|
