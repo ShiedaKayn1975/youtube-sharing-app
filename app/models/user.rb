@@ -8,6 +8,8 @@ class User < ApplicationRecord
   validates_uniqueness_of :email, case_sensitive: false
 
   has_many :video_sharings
+  has_many :subscriptions
+  has_many :notifications
 
   def self.find_in_cache(id)
     Rails.cache.fetch(['User', id], expires_in: 5.minutes) do

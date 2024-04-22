@@ -1,5 +1,6 @@
 class Api::V1::SessionsController < ApplicationController
   DISABLED_LOGIN_MESSAGE = 'Your account is disabled, if this is unexpected, please contact system admin'.freeze
+  before_action :authenticate_user!, only: [:me]
 
   def create
     if params[:email].blank? || params[:password].blank?
@@ -19,5 +20,13 @@ class Api::V1::SessionsController < ApplicationController
     else
       render_error 'Wrong email or password', :unauthorized
     end
+  end
+
+  def me
+    profile = @current_user.as_json(except: [
+      :password_digest
+    ])
+
+    return render json: profile, status: :ok
   end
 end

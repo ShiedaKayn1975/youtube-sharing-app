@@ -1,10 +1,12 @@
 class Api::V1::VideoSharingsController < Api::V1::ApiController
+  skip_before_action :authenticate_user!, only: [:index]
+
   def index
-    @video_sharings = VideoSharing.includes(:sources, :users).all
+    @video_sharings = VideoSharing.includes(:user).all
   end
   
   def create
-    @video = VideoSharing.new(video_sharings_params)
+    @video = @current_user.video_sharings.new(video_sharings_params)
     if @video.save
       return status_ok
     else
@@ -15,6 +17,6 @@ class Api::V1::VideoSharingsController < Api::V1::ApiController
   private
 
   def video_sharings_params
-    params.permit(:video_url, :source_id)
+    params.permit(:video_url, :title, :thumbnail, :description, :video_id)
   end
 end

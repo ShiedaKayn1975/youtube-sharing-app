@@ -10,11 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_19_161134) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_22_031437) do
+  create_table "notifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "sources", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "subscriptions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "subscriber_id", null: false
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subscriber_id"], name: "index_subscriptions_on_subscriber_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -29,13 +47,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_161134) do
   create_table "video_sharings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "video_url"
     t.bigint "user_id", null: false
-    t.bigint "source_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["source_id"], name: "index_video_sharings_on_source_id"
+    t.text "thumbnail"
+    t.string "title"
+    t.text "description"
+    t.string "video_id"
     t.index ["user_id"], name: "index_video_sharings_on_user_id"
   end
 
-  add_foreign_key "video_sharings", "sources"
+  add_foreign_key "notifications", "users"
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "video_sharings", "users"
 end

@@ -14,4 +14,6 @@ user1.update(password: '123456')
 user2 = User.find_or_create_by(email: 'admin2@gmail.com', name: 'user2')
 user2.update(password: '123456')
 
-['youtube'].each {|source| Source.find_or_create_by(name: source)}
+# Create subscription notification
+sub1 = Subscription.find_or_create_by(user_id: user1.id, active: true, subscriber_id: user2.id)
+sub2 = Subscription.find_or_create_by(user_id: user2.id, active: true, subscriber_id: user1.id)

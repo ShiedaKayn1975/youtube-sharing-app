@@ -1,1 +1,1 @@
-FROM redis:5-alpine
+FROM redis:6-alpine

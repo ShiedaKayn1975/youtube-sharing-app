@@ -1,4 +1,9 @@
 class VideoSharing < ApplicationRecord
   belongs_to :user
-  belongs_to :source
+
+  after_create :create_notification
+
+  def create_notification
+    notification = Notification.create(user: user, content: "#{user.name} shared a video.\nTitle: #{title}")
+  end
 end
