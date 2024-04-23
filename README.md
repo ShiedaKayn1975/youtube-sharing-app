@@ -1,24 +1,65 @@
-# README
+# Youtube sharing backend
+## Introduction
+- Backend for youtube sharing video application
+- Built based on Ruby on Rails, Docker, MySQL
+- Integrate testing with rSpec
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Prerequisites
+- Ruby: 3.0.0
+- Docker
+- rSpec
+- Websocket
 
-Things you may want to cover:
+## Installation & Configuration
+To clone project, run:
+```sh
+git clone https://github.com/ShiedaKayn1975/youtube-sharing-app.git
+```
+After that, go to the root project directory, create your own `.env` file following this content and grant the value for these variables:
+```
+HOST=localhost
+DATABASE_PASSWORD=12345678
+DATABASE_USERNAME=youtube
+JWT_SECRET=youtube-sharing
+SIDEKIQ_USERNAME=admin
+SIDEKIQ_PASSWORD=admin
+```
 
-* Ruby version
+Then, you have to run Docker to build project's containers, run:
+```sh
+docker-compose up -d --build
+```
 
-* System dependencies
+## Database installation
+Next step, exec to MySQL container and create a MySQL user with granted permissions.
+```sh
+docker exec -it container_id /bin/sh
+```
+Access to MySQL shell
+```sh
+mysql -u root -p
+```
+Create MySQL user with granted permissions
+```sh
+CREATE USER 'youtube'@'*' IDENTIFIED WITH mysql_native_password BY '12345678';
+GRANT ALL PRIVILEGES ON *.* TO 'youtube'@'*' WITH GRANT OPTION;
+```
+Finally, re-run docker build again:
+```sh
+docker-compose up -d --build
+```
 
-* Configuration
+## Create seeding data
+Exec to app container, and run:
+```sh
+rails db:seed
+```
+to create seed data
 
-* Database creation
+## Run the test
+Exec to app container, and run:
+```sh
+rspec
+```
 
-* Database initialization
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
