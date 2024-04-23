@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :video_sharings do
+  factory :video_sharing do
     thumbnail { FFaker::Youtube.url }
     title { FFaker::Movie.title }
     description { FFaker::Book.description }
